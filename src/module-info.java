@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+/**
+ * @author Juan
+ *
+ */
+module JGBank {
+}
