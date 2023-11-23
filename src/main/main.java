@@ -42,12 +42,12 @@ import components.Transfert;
 
 public class main {
 
+	//Creation of lists
+	
 	static ArrayList<Client> clients = new ArrayList<Client>();
 	static ArrayList<Account> accounts = new ArrayList<Account>();
 	static Hashtable<Integer, Account> accountsHT = new Hashtable<>();
 	static ArrayList<Flow> flows = new ArrayList<Flow>();
-
-	// GENERATE TEST -------------------------------------------
 
 	public static void main(String[] args) {
 
@@ -68,11 +68,13 @@ public class main {
 
 	}
 
-	public static void loadCliens(int nClients) { //Generate clients and add to he array
+	public static ArrayList<Client> loadCliens(int nClients) { // Generate clients and add to he array
 
 		for (int i = 1; i <= nClients; i++) {
 			clients.add(new Client("name" + i, "firstName" + i));
 		}
+
+		return clients;
 
 	}
 
@@ -82,7 +84,7 @@ public class main {
 
 	}
 
-	public static ArrayList<Account> loadAccounts(ArrayList<Client> clientsList) { //Generate and add account to array
+	public static ArrayList<Account> loadAccounts(ArrayList<Client> clientsList) { // Generate and add account to array
 
 		for (Client clientSelected : clientsList) {
 			accounts.add(new CurrentAccount("currentAccount", clientSelected, 0));
@@ -99,7 +101,7 @@ public class main {
 
 	}
 
-	public static Hashtable<Integer, Account> loadAccountsHT(ArrayList<Account> accountsList) {
+	public static Hashtable<Integer, Account> loadAccountsHT(ArrayList<Account> accountsList) { //Load accounts hash table
 
 		for (Account accountSelected : accountsList) {
 			accountsHT.put(accountSelected.getAccountNumber(), accountSelected);
@@ -109,7 +111,7 @@ public class main {
 
 	}
 
-	public static void displayAccountsHTAscending() { //Display accounts in ascending order based on the balance
+	public static void displayAccountsHTAscending() { // Display accounts in ascending order based on the balance
 
 		List<Account> tempSortedFlowHT = new ArrayList<>(accountsHT.values());
 
@@ -126,12 +128,12 @@ public class main {
 
 	}
 
-	public static void loadFlows() { //Genearte flows and added to the array
+	public static void loadFlows() { // Genearte flows and added to the array
 
 		flows.add(new Debit("Debit of 50€", 01, 50, accounts.get(0).getAccountNumber(), false,
 				LocalDate.now().plusDays(2)));
 
-		for (Account accountSelected : accounts) {
+		for (Account accountSelected : accounts) { // Add credit to current or saving account depending on accountSelect type
 			flows.add(new Credit("Credit of 100.50", 0, accountSelected instanceof CurrentAccount ? 100.50 : 1500,
 					accountSelected.getAccountNumber(), false, LocalDate.now().plusDays(2)));
 
@@ -144,17 +146,17 @@ public class main {
 
 	public static void updateBalance(Hashtable<Integer, Account> accountsHTEnter, ArrayList<Flow> flowsEnter) {
 
-		for (Flow flowSelected : flowsEnter) { //Interate flows and update balances
+		for (Flow flowSelected : flowsEnter) { // Interate flows and update balances
 			accountsHTEnter.get(flowSelected.getTargetAccountNumber()).setBalance(flowSelected);
 
 			Account targetAccount = accountsHTEnter.get(flowSelected.getTargetAccountNumber());
 			targetAccount.setBalance(flowSelected);
 
 		}
-		
+
 		Predicate<Account> hasNegativeBalance = account -> account.getBalance() < 0;
 
-		Optional.ofNullable(accountsHTEnter.values().stream().filter(hasNegativeBalance) //Display accounts with negative balance
+		Optional.ofNullable(accountsHTEnter.values().stream().filter(hasNegativeBalance) // Display accounts with negative balance
 				.map(account -> "The account with number: " + account.getAccountNumber()
 						+ " has a negative balance of: " + account.getBalance() + "€")
 				.reduce((s1, s2) -> s1 + "\n" + s2).orElse(null)).ifPresent(System.out::println);
@@ -163,15 +165,15 @@ public class main {
 
 	}
 
-	public static void loadJson() { //Load Json using GSon
-		
+	public static void loadJson() { // Load Json using GSon
+
 		Path filePath = Paths.get("src/assets/flows.json");
 
 		try {
 
-			String jsonContent = new String(Files.readAllBytes(filePath)); //Read file
+			String jsonContent = new String(Files.readAllBytes(filePath)); // Read file
 
-			JsonArray jsonArray = JsonParser.parseString(jsonContent).getAsJsonArray(); 
+			JsonArray jsonArray = JsonParser.parseString(jsonContent).getAsJsonArray();
 
 			Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
 
@@ -180,7 +182,7 @@ public class main {
 				JsonObject jsonObject = jsonElement.getAsJsonObject();
 				String type = jsonObject.get("type").getAsString();
 
-				switch (type) { //Filter node by type
+				switch (type) { // Filter node by type
 				case "Debit":
 					Debit debit = gson.fromJson(jsonObject, Debit.class);
 					debit.setDateOfFlow(LocalDate.parse(jsonObject.get("dateOfFlow").getAsString()));
@@ -211,11 +213,11 @@ public class main {
 
 	}
 
-	public static void loadXML() { 
+	public static void loadXML() {
 
 		Path filePath = Paths.get("src/assets/accounts.xml");
 
-		Account account = null; //Create an empty account object
+		Account account = null; // Create an empty account object
 
 		try {
 
@@ -227,16 +229,16 @@ public class main {
 
 			NodeList accountsXMLList = document.getElementsByTagName("Account");
 
-			for (int i = 0; i < accountsXMLList.getLength(); i++) { //Iterate over all the nodes in the nodelist
+			for (int i = 0; i < accountsXMLList.getLength(); i++) { // Iterate over all the nodes in the nodelist
 
 				Node XMLAccount = accountsXMLList.item(i);
 
-				if (XMLAccount.getNodeType() == Node.ELEMENT_NODE) { //Check for the right node type
+				if (XMLAccount.getNodeType() == Node.ELEMENT_NODE) { // Check for the right node type
 
 					Element accountElement = (Element) XMLAccount;
 
-					switch (accountElement.getAttribute("type")) { //Filter by account type
-					case "Current": { //Assign corresponding type to account object
+					switch (accountElement.getAttribute("type")) { // Filter by account type
+					case "Current": { // Assign corresponding type to account object
 						account = new CurrentAccount(null, new Client(null, null), 0);
 						break;
 					}
@@ -258,7 +260,8 @@ public class main {
 
 							Element detailElement = (Element) accountDetail;
 
-							if (detailElement.getNodeName().equals("client")) { //If the node is the client one create a nodelist
+							if (detailElement.getNodeName().equals("client")) { // If the node is the client one create
+																				// a nodelist
 
 								NodeList clientDetails = detailElement.getChildNodes();
 
@@ -266,11 +269,11 @@ public class main {
 
 									Node clientDetail = clientDetails.item(x);
 
-									if (clientDetail.getNodeType() == Node.ELEMENT_NODE) { 
+									if (clientDetail.getNodeType() == Node.ELEMENT_NODE) {
 
 										Element clientElement = (Element) clientDetail;
 
-										switch (clientElement.getNodeName()) { //Filter between client values
+										switch (clientElement.getNodeName()) { // Filter between client values
 										case "name": {
 											account.getClient().setName(clientElement.getTextContent());
 											break;
@@ -288,9 +291,9 @@ public class main {
 
 								}
 
-							} else { //If is not a client node get the info
+							} else { // If is not a client node get the info
 
-								switch (detailElement.getTagName()) { //Filter info by name 
+								switch (detailElement.getTagName()) { // Filter info by name
 								case "label": {
 									account.setLabel(detailElement.getTextContent());
 									break;

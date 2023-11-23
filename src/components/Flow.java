@@ -5,18 +5,18 @@ import java.time.LocalDate;
 
 public abstract class Flow {
 
-	protected String comment; 
-	protected int identifier;
-	protected double balance;
-	protected int targetAccountNumber;
-	protected boolean effect;
-	protected LocalDate dateOfFlow;
+	private String comment; 
+	private int identifier;
+	private double ammount;
+	private int targetAccountNumber;
+	private boolean effect;
+	private LocalDate dateOfFlow;
 
 	public Flow(String comment, int identifier, double balance, int targetAccountNumber, boolean effect, LocalDate dateOfFlow) {
 		super();
 		this.comment = comment;
 		this.identifier = identifier;
-		this.balance = balance;
+		this.ammount = balance;
 		this.targetAccountNumber = targetAccountNumber;
 		this.effect = effect;
 		this.dateOfFlow = dateOfFlow;
@@ -40,11 +40,11 @@ public abstract class Flow {
 	}
 
 	public double getBalance() {
-		return balance;
+		return ammount;
 	}
 
 	public void setBalance(double balance) {
-		this.balance = balance;
+		this.ammount = balance;
 	}
 
 	public int getTargetAccountNumber() {
