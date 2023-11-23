@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Accounts>
+	<Account type="Current">
+		<label>Account</label>
+		<balance>0</balance>
+		<client>
+			<name>Bangalore</name>
+			<firstName>Karnataka</firstName>
+		</client>
+	</Account>
+	<Account type="Current">
+		<label>Account</label>
+		<balance>0</balance>
+		<client>
+			<name>Juan</name>
+			<firstName>Garcia</firstName>
+		</client>
+	</Account>
+	<Account type="Saving">
+		<label>Account</label>
+		<balance>0</balance>
+		<client>
+			<name>Guillermo</name>
+			<firstName>Pertri</firstName>
+		</client>
+	</Account>
+</Accounts>
+			
+			

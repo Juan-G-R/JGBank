@@ -1,0 +1,30 @@
+[
+  {
+    "type": "Debit",
+    "comment": "Test comment",
+    "identifier": 0,
+    "balance": 0,
+    "targetAccountNumber": 0,
+    "effect": false,
+    "dateOfFlow": "2023-11-23"
+  },
+  {
+    "type": "Credit",
+    "comment": "Test comment",
+    "identifier": 0,
+    "balance": 0,
+    "targetAccountNumber": 0,
+    "effect": false,
+    "dateOfFlow": "2023-11-23"
+  },
+  {
+    "type": "Transfer",
+    "comment": "Test comment",
+    "identifier": 0,
+    "balance": 0,
+    "targetAccountNumber": 0,
+    "effect": false,
+    "dateOfFlow": "2023-11-23",
+    "emitterAccountNumber": 1550
+  }
+]
