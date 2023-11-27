@@ -34,22 +34,26 @@ import com.google.gson.JsonParser;
 import components.Account;
 import components.Client;
 import components.Credit;
+import components.CreditTypeAdapter;
 import components.CurrentAccount;
 import components.Debit;
+import components.DebitTypeAdapter;
 import components.Flow;
 import components.SavingsAccount;
 import components.Transfert;
+import components.TransfertTypeAdapter;
 
 public class main {
 
-	//Creation of lists
-	
+	// Creation of lists
+
 	static ArrayList<Client> clients = new ArrayList<Client>();
 	static ArrayList<Account> accounts = new ArrayList<Account>();
 	static Hashtable<Integer, Account> accountsHT = new Hashtable<>();
 	static ArrayList<Flow> flows = new ArrayList<Flow>();
 
 	public static void main(String[] args) {
+
 
 		loadCliens(5);
 		displayClients();
@@ -101,7 +105,8 @@ public class main {
 
 	}
 
-	public static Hashtable<Integer, Account> loadAccountsHT(ArrayList<Account> accountsList) { //Load accounts hash table
+	public static Hashtable<Integer, Account> loadAccountsHT(ArrayList<Account> accountsList) { // Load accounts hash
+																								// table
 
 		for (Account accountSelected : accountsList) {
 			accountsHT.put(accountSelected.getAccountNumber(), accountSelected);
@@ -133,7 +138,8 @@ public class main {
 		flows.add(new Debit("Debit of 50€", 01, 50, accounts.get(0).getAccountNumber(), false,
 				LocalDate.now().plusDays(2)));
 
-		for (Account accountSelected : accounts) { // Add credit to current or saving account depending on accountSelect type
+		for (Account accountSelected : accounts) { // Add credit to current or saving account depending on accountSelect
+													// type
 			flows.add(new Credit("Credit of 100.50", 0, accountSelected instanceof CurrentAccount ? 100.50 : 1500,
 					accountSelected.getAccountNumber(), false, LocalDate.now().plusDays(2)));
 
@@ -156,7 +162,8 @@ public class main {
 
 		Predicate<Account> hasNegativeBalance = account -> account.getBalance() < 0;
 
-		Optional.ofNullable(accountsHTEnter.values().stream().filter(hasNegativeBalance) // Display accounts with negative balance
+		Optional.ofNullable(accountsHTEnter.values().stream().filter(hasNegativeBalance) // Display accounts with
+																							// negative balance
 				.map(account -> "The account with number: " + account.getAccountNumber()
 						+ " has a negative balance of: " + account.getBalance() + "€")
 				.reduce((s1, s2) -> s1 + "\n" + s2).orElse(null)).ifPresent(System.out::println);
@@ -175,7 +182,10 @@ public class main {
 
 			JsonArray jsonArray = JsonParser.parseString(jsonContent).getAsJsonArray();
 
-			Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
+			Gson gson = new GsonBuilder().registerTypeAdapter(Debit.class, new DebitTypeAdapter())
+					.registerTypeAdapter(Transfert.class, new TransfertTypeAdapter())
+					.registerTypeAdapter(Credit.class, new CreditTypeAdapter()).setPrettyPrinting().excludeFieldsWithoutExposeAnnotation()
+					.create();
 
 			for (JsonElement jsonElement : jsonArray) {
 
